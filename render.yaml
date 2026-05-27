@@ -32,7 +32,7 @@ services:
         value: http://hiremind-ai-service:8000
 
   # 3. React Frontend Static Site
-  - type: static
+  - type: web
     name: hiremind-frontend
     env: static
     rootDir: frontend
