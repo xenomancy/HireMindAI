@@ -143,8 +143,8 @@ router.post('/generate', protect, async (req, res, next) => {
 
     const user = await User.findById(req.user.id);
 
-    // SaaS Free Limit Check: Free users can only generate 2 roadmaps
-    if (user.plan === 'free' && user.usage.roadmapsGenerated >= 2) {
+    // SaaS Free Limit Check: Free users can only generate 3 roadmaps
+    if (user.plan === 'free' && user.usage.roadmapsGenerated >= 3) {
       return res.status(403).json({
         status: 'validation_failed',
         message: 'Free tier limit reached for study roadmaps. Upgrade to Premium!',

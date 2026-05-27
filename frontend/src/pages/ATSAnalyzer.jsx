@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export default function ATSAnalyzer() {
-  const { user, refreshUserUsage } = useContext(AuthContext);
+  const { user, refreshUserUsage, setIsPremiumModalOpen } = useContext(AuthContext);
   
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
@@ -124,7 +124,8 @@ export default function ATSAnalyzer() {
 
     // Free Tier Usage Limit Check
     if (user && user.plan === 'free' && user.usage.resumesAnalyzed >= 3) {
-      setErrorMsg("Free Tier limit reached (Max 3 Resumes). Click your SaaS tier badge in the sidebar to toggle Premium!");
+      setErrorMsg("Free Tier limit reached (Max 3 Resumes). Upgrade to Premium to unlock unlimited resume scans!");
+      setIsPremiumModalOpen(true);
       return;
     }
 

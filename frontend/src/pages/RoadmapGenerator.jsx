@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function RoadmapGenerator() {
-  const { user, refreshUserUsage } = useContext(AuthContext);
+  const { user, refreshUserUsage, setIsPremiumModalOpen } = useContext(AuthContext);
 
   const [dreamCompany, setDreamCompany] = useState('');
   const [role, setRole] = useState('');
@@ -151,8 +151,9 @@ export default function RoadmapGenerator() {
       return;
     }
 
-    if (user && user.plan === 'free' && user.usage.roadmapsGenerated >= 2) {
-      setErrorMsg("Free Plan limits reached (Max 2 Roadmaps). Click your plan badge in the sidebar to toggle Premium!");
+    if (user && user.plan === 'free' && user.usage.roadmapsGenerated >= 3) {
+      setErrorMsg("Free Plan limits reached (Max 3 Roadmaps). Upgrade to Premium to build unlimited study pathways!");
+      setIsPremiumModalOpen(true);
       return;
     }
 

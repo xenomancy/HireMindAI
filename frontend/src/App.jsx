@@ -17,6 +17,7 @@ import RoadmapGenerator from './pages/RoadmapGenerator';
 // Components
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import PremiumModal from './components/PremiumModal';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -67,6 +68,7 @@ export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
   // Setup default AXIOS base URL or headers
   useEffect(() => {
@@ -163,9 +165,9 @@ export default function App() {
       email: 'guest@hiremind.ai',
       plan: 'free',
       usage: {
-        resumesAnalyzed: 1,
-        interviewsConducted: 1,
-        roadmapsGenerated: 1,
+        resumesAnalyzed: 3,
+        interviewsConducted: 3,
+        roadmapsGenerated: 3,
       }
     });
     setIsAuthenticated(true);
@@ -227,7 +229,7 @@ export default function App() {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, loading, login, signup, loginAsGuest, googleLogin, logout, upgradePlan, refreshUserUsage }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated, loading, login, signup, loginAsGuest, googleLogin, logout, upgradePlan, refreshUserUsage, isPremiumModalOpen, setIsPremiumModalOpen }}>
       <BrowserRouter>
         <NavigationLayout>
           <Routes>
@@ -278,6 +280,8 @@ export default function App() {
           </Routes>
         </NavigationLayout>
       </BrowserRouter>
+      {/* Global Premium Upgrade Pricing Modal */}
+      <PremiumModal isOpen={isPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
     </AuthContext.Provider>
   );
 }

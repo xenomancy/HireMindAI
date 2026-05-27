@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export default function InterviewPrep() {
-  const { user, refreshUserUsage } = useContext(AuthContext);
+  const { user, refreshUserUsage, setIsPremiumModalOpen } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [role, setRole] = useState('');
@@ -158,7 +158,8 @@ export default function InterviewPrep() {
 
     // Free Tier Usage Limit Check
     if (user && user.plan === 'free' && user.usage.interviewsConducted >= 3) {
-      setErrorMsg("Free plan usage limits reached (Max 3 Interviews). Click your plan badge in the sidebar to toggle Premium!");
+      setErrorMsg("Free plan usage limits reached (Max 3 Interviews). Upgrade to Premium to unlock unlimited live interactive interviews!");
+      setIsPremiumModalOpen(true);
       return;
     }
 

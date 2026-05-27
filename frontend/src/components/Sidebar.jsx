@@ -1,7 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
-import PremiumModal from './PremiumModal';
 import {
   LayoutDashboard,
   FileCheck,
@@ -11,16 +10,15 @@ import {
 } from 'lucide-react';
 
 export default function Sidebar() {
-  const { user, logout, upgradePlan } = useContext(AuthContext);
+  const { user, logout, upgradePlan, setIsPremiumModalOpen } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlePlanToggle = async () => {
     if (user && user.plan === 'premium') {
       // Toggle back to free for easy developer sandbox testing reset
       await upgradePlan();
     } else {
-      setIsModalOpen(true);
+      setIsPremiumModalOpen(true);
     }
   };
 
@@ -120,9 +118,6 @@ export default function Sidebar() {
           </button>
         </div>
       )}
-
-      {/* Premium Stripe/Sandbox Checkout Modal */}
-      <PremiumModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </aside>
   );
 }
