@@ -1,0 +1,22 @@
+name: ⏰ 24/7 Keep-Awake Scheduler
+
+on:
+  schedule:
+    # Runs every 10 minutes (Render free instances spin down after 15 minutes of inactivity)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions UI
+
+jobs:
+  ping-services:
+    name: Ping Deployed Live Services
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Node.js Backend API
+        run: |
+          echo "Sending keep-awake ping to backend API..."
+          curl -s -o /dev/null -w "%{http_code}" https://hiremind-backend-9hxn.onrender.com/health
+          
+      - name: Ping React Frontend UI
+        run: |
+          echo "Sending keep-awake ping to frontend React app..."
+          curl -s -o /dev/null -w "%{http_code}" https://hiremindai-0dcs.onrender.com
