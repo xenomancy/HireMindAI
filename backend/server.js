@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const axios = require('axios');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
 
@@ -38,6 +39,20 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`Express API Server running on port ${PORT}`);
 });
+
+// Self-healing Keep-Awake Background Ping for Python AI Microservice
+if (process.env.AI_SERVICE_URL) {
+  const AI_URL = process.env.AI_SERVICE_URL;
+  console.log(`Keep-Awake: Initializing background pinger for AI service at ${AI_URL}`);
+  setInterval(async () => {
+    try {
+      const response = await axios.get(`${AI_URL}/health`);
+      console.log(`Keep-Awake Success: AI service responded with: ${JSON.stringify(response.data)}`);
+    } catch (error) {
+      console.warn(`Keep-Awake Warning: AI service ping failed: ${error.message}`);
+    }
+  }, 10 * 60 * 1000); // Ping every 10 minutes
+}
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
