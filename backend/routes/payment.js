@@ -18,12 +18,16 @@ router.post('/create-checkout-session', protect, async (req, res, next) => {
 
     const host = req.headers.origin || 'http://localhost:5173';
 
-    // Sandbox Mock Fallback (If Stripe is not configured)
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_mock_key_for_sandbox') {
-      console.log("Stripe Secret Key is not configured. Initiating sandbox checkout redirect...");
-      return res.json({
-        success: true,
-        url: `${host}/dashboard?payment=sandbox_success`
+    // Sandbox Mock Fallback / Placeholder Alert (If Stripe is not configured)
+    const isPlaceholder = !process.env.STRIPE_SECRET_KEY || 
+                          process.env.STRIPE_SECRET_KEY === 'sk_test_mock_key_for_sandbox' || 
+                          process.env.STRIPE_SECRET_KEY.includes('PASTE_YOUR_STRIPE_TEST_SECRET_KEY_HERE');
+
+    if (isPlaceholder) {
+      console.log("Stripe Secret Key is not configured. Blocking real gateway checkout redirect...");
+      return res.status(400).json({
+        success: false,
+        message: 'Stripe Secret Key is not set in backend/.env. Please paste your sk_test_... key in backend/.env to open the real gateway, or click "Developer Sandbox Instant Toggle" below to simulate it!'
       });
     }
 
