@@ -13,8 +13,14 @@ connectDB();
 
 const app = express();
 
-// Body parser
-app.use(express.json());
+// Body parser (captures raw body for Stripe webhook signature verification)
+app.use(express.json({
+  verify: (req, res, buf) => {
+    if (req.originalUrl.startsWith('/api/payment/webhook')) {
+      req.rawBody = buf;
+    }
+  }
+}));
 
 // Enable CORS
 app.use(cors());
@@ -25,6 +31,7 @@ app.use('/api/resume', require('./routes/resume'));
 app.use('/api/interview', require('./routes/interview'));
 app.use('/api/roadmap', require('./routes/roadmap'));
 app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/payment', require('./routes/payment'));
 
 // Basic health check route
 app.get('/health', (req, res) => {
