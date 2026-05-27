@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:latest
+    container_name: hiremind_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - hiremind_network
+
+  backend:
+    build: ./backend
+    container_name: hiremind_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://database:27017/hiremind
+      - JWT_SECRET=hiremind_production_ready_secret_key_123
+      - AI_SERVICE_URL=http://ai-service:8000
+    depends_on:
+      - database
+    networks:
+      - hiremind_network
+
+  ai-service:
+    build: ./ai-service
+    container_name: hiremind_ai_service
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - GROQ_API_KEY=your_groq_api_key_here
+    networks:
+      - hiremind_network
+
+  frontend:
+    build: ./frontend
+    container_name: hiremind_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - hiremind_network
+
+volumes:
+  mongo_data:
+
+networks:
+  hiremind_network:
+    driver: bridge
